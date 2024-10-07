@@ -1,5 +1,5 @@
 
-# Random Key and IV Generator
+# GoCypher - A Random Key and IV Generator
 
 This Go program generates a random cryptographic key and initialization vector (IV) that can be used in encryption algorithms. The key and IV are output in Base64-encoded format. The sizes of the key and IV are configurable via command-line flags.
 
@@ -10,7 +10,32 @@ This Go program generates a random cryptographic key and initialization vector (
 - Outputs Base64-encoded values for easy integration into various systems.
 - Customizable key and IV sizes.
 
-## Usage
+## Requirements
+
+This project uses Go modules. Make sure you are using Go 1.22 or later, as defined in the `go.mod` file.
+
+The `go.mod` file for this project looks like:
+
+```go
+module gocypher
+
+go 1.22.0
+```
+
+## Installation
+
+First, clone the repository to your local machine:
+
+```bash
+git clone https://github.com/petervdpas/gocypher.git
+cd gocypher
+```
+
+Next, make sure you have Go 1.22 or later installed. Run the following command to download dependencies (if any):
+
+```bash
+go mod tidy
+```
 
 ### Compiling the Program
 
@@ -66,7 +91,6 @@ To display the help message:
 This will display:
 
 ```bash
-
 This program generates random keys and IVs for encryption.
 You can specify the size of the key and IV using the following flags:
 

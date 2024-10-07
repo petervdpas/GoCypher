@@ -5,43 +5,56 @@ import (
 	"encoding/base64"
 	"flag"
 	"fmt"
+	"log"
+	"os"
 )
 
 func main() {
-	// Define flags
-	help := flag.Bool("help", false, "Show help message")
-	keySize := flag.Int("keysize", 32, "Size of the key in bytes (default: 32 for 256-bit key)")
-	ivSize := flag.Int("ivsize", 16, "Size of the IV in bytes (default: 16 for 128-bit IV)")
-	
-	// Parse the flags
-	flag.Parse()
+	// Initialize the program with flags
+	keySize, ivSize := parseFlags()
 
-	// Show help message if --help flag is set
-	if *help {
-		showHelp()
-		return
-	}
-
-	// Generate random key
-	key, err := generateRandomBytes(*keySize)
+	// Generate random key and IV
+	key, err := generateRandomBytes(keySize)
 	if err != nil {
-		fmt.Println("Error generating key:", err)
-		return
-	}
-	
-	// Generate random IV
-	iv, err := generateRandomBytes(*ivSize)
-	if err != nil {
-		fmt.Println("Error generating IV:", err)
-		return
+		log.Fatalf("Error generating key: %v", err)
 	}
 
-	// Print results
+	iv, err := generateRandomBytes(ivSize)
+	if err != nil {
+		log.Fatalf("Error generating IV: %v", err)
+	}
+
+	// Print the Base64 encoded results
 	fmt.Println("Base64 Encoded Key:", base64.StdEncoding.EncodeToString(key))
 	fmt.Println("Base64 Encoded IV:", base64.StdEncoding.EncodeToString(iv))
 }
 
-// showHelp prints the help message for the program
+// parseFlags parses the command-line flags and returns the keySize and ivSize
+func parseFlags() (int, int) {
+	help := flag.Bool("help", false, "Show help message")
+	keySize := flag.Int("keysize", 32, "Size of the key in bytes (default: 32 for 256-bit key)")
+	ivSize := flag.Int("ivsize", 16, "Size of the IV in bytes (default: 16 for 128-bit IV)")
+	flag.Usage = showHelp // Use custom help message
+
+	flag.Parse()
+
+	if *help {
+		flag.Usage()
+		os.Exit(0)
+	}
+
+	// Validate key and IV sizes
+	if *keySize <= 0 {
+		log.Fatalf("Invalid key size: %d. Key size must be greater than 0.", *keySize)
+	}
+	if *ivSize <= 0 {
+		log.Fatalf("Invalid IV size: %d. IV size must be greater than 0.", *ivSize)
+	}
+
+	return *keySize, *ivSize
+}
+
+// showHelp prints the help message
 func showHelp() {
 	fmt.Println("This program generates random keys and IVs for encryption.")
 	fmt.Println("You can specify the size of the key and IV using the following flags:")
@@ -63,6 +76,5 @@ func generateRandomBytes(n int) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	return b, nil
 }

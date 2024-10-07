@@ -42,7 +42,7 @@ go mod tidy
 To compile the program into an executable (`.exe`), use the following command:
 
 ```bash
-go build -ldflags="-s -w" -o myprogram.exe main.go
+go build -ldflags="-s -w" -o randombyte.exe main.go
 ```
 
 This command minimizes the size of the executable by stripping symbol tables and debug information.
